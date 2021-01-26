@@ -8,6 +8,10 @@
 import Foundation
 import UIKit
 
+protocol MenuDelegate {
+    func menuHandler(index: Int)
+}
+
 class MenuViewController: UITableViewController {
     
     var delegate: MenuDelegate?
@@ -41,6 +45,4 @@ extension MenuViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         delegate?.menuHandler(index: indexPath.row + 1)
     }
-    
-    
 }

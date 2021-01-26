@@ -10,24 +10,18 @@ import UIKit
 
 class ContainerViewController: UIViewController {
     var menuView: MenuViewController!
-    var centerView: UIViewController!
+    var centerView: UINavigationController!
     var homeView: HomeViewController!
-    var isExpandMenu: Bool = false
+    var ifMenuShowUp: Bool = false
+    
+    let menuWidth: CGFloat = 200
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setHomeFun()
+        setupHomeView()
     }
     
-    override var prefersStatusBarHidden: Bool {
-        return isExpandMenu
-    }
-    
-    override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
-        return .slide
-    }
-    
-    func setHomeFun() {
+    func setupHomeView() {
         if homeView == nil {
             homeView = HomeViewController()
             homeView.delegate = self
@@ -38,20 +32,20 @@ class ContainerViewController: UIViewController {
         }
     }
     
-    func setHomeFun(index: Int) {
+    func homeViewSwitchToPage(at index: Int) {
         switch index {
         case 1:
-            configureMenu()
+            setupMenuView()
         case 2:
             homeView.navigationController?.pushViewController(FirstVC(), animated: true)
         case 3:
             print("Not implement: \(#filePath) - \(#line)")
         default:
-            configureMenu()
+            setupMenuView()
         }
     }
     
-    func configureMenu() {
+    func setupMenuView() {
         if menuView == nil {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             menuView = storyboard.instantiateViewController(identifier: "MenuViewController") as MenuViewController
@@ -59,8 +53,16 @@ class ContainerViewController: UIViewController {
             view.insertSubview(menuView.view, at: 0)
             addChild(menuView)
             menuView.didMove(toParent: self)
-            print("configureMenu called")
+            self.menuView.view.frame.origin.x = -menuWidth
         }
+    }
+    
+    override var prefersStatusBarHidden: Bool {
+        return ifMenuShowUp
+    }
+    
+    override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
+        return .slide
     }
     
     func configStatusbarAnimation() {
@@ -69,19 +71,38 @@ class ContainerViewController: UIViewController {
         }, completion: nil)
     }
     
-    func showMenu(isExpand: Bool) {
-        if isExpand {
+    func hasNotch() -> Bool {
+        return self.view.safeAreaInsets.bottom > 20
+    }
+    
+    func showOrHideMenu(show: Bool) {
+        
+        if show {
             UIView.animate(withDuration: 0.5, delay: 0,usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseOut, animations: {
-                self.centerView.view.frame.origin.x = self.centerView.view.frame.width - 200
+                self.centerView.view.frame.origin.x = self.centerView.view.frame.width - self.menuWidth
+                self.menuView.view.frame.origin.x = 0
+                
+                // IMPORTANT: The code below fix status bar shrink when device has no notch.
+                if !self.hasNotch() {
+                    self.additionalSafeAreaInsets.top = 20
+                }
             }, completion: nil)
         } else {
             UIView.animate(withDuration: 0.5, delay: 0,usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseOut, animations: {
                 self.centerView.view.frame.origin.x = 0
+                self.menuView.view.frame.origin.x = -self.menuWidth
+                
+                // IMPORTANT: The code below fix status bar shrink when device has no notch.
+                if !self.hasNotch() {
+                    self.additionalSafeAreaInsets.top = 0
+                }
             }, completion: nil)
         }
         
+        // Indicates system to hide status bar.
         configStatusbarAnimation()
     }
+
 }
 
 class FirstVC: UIViewController {
@@ -90,15 +111,15 @@ class FirstVC: UIViewController {
 
 extension ContainerViewController: MenuDelegate {
     func menuHandler(index: Int) {
-        if !isExpandMenu {
-            configureMenu()
+        if !ifMenuShowUp {
+            setupMenuView()
         }
         
-        isExpandMenu = !isExpandMenu
-        showMenu(isExpand: isExpandMenu)
+        ifMenuShowUp = !ifMenuShowUp
+        showOrHideMenu(show: ifMenuShowUp)
         
         if index > -1 {
-            setHomeFun(index: index)
+            homeViewSwitchToPage(at: index)
         }
     }
 }
