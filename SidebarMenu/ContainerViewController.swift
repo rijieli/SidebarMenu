@@ -15,10 +15,65 @@ class ContainerViewController: UIViewController {
     var ifMenuShowUp: Bool = false
     
     let menuWidth: CGFloat = 200
+    let panGestureSensitivity: CGFloat = 40
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupHomeView()
+        setupGesture()
+    }
+    
+    func setupGesture() {
+        let panGuesture = UIPanGestureRecognizer(target: self, action: #selector(panGestureAction))
+        centerView.view.addGestureRecognizer(panGuesture)
+    }
+    
+    @objc func panGestureAction(_ recognizer: UIPanGestureRecognizer) {
+        
+        let screenCenterX = recognizer.view!.frame.width / 2
+        
+        switch(recognizer.state) {
+        case .began:
+            setupMenuView()
+        case .changed:
+            let moveDistance = recognizer.translation(in: centerView.view).x
+            let newPosition = (recognizer.view?.center.x)! + moveDistance
+            if !ifMenuShowUp {
+                if moveDistance > 0 {
+                    if newPosition >= screenCenterX {
+                        recognizer.view?.center.x = newPosition
+                        menuView.view.frame.origin.x = menuView.view.frame.origin.x + moveDistance
+                        recognizer.setTranslation(.zero, in: centerView.view)
+                    }
+                }
+            } else {
+                if moveDistance < 0 {
+                    recognizer.view?.center.x = newPosition
+                    menuView.view.frame.origin.x = menuView.view.frame.origin.x + moveDistance
+                    recognizer.setTranslation(.zero, in: centerView.view)
+                }
+            }
+        case .ended:
+            print(recognizer.translation(in: menuView.view).x)
+            if !ifMenuShowUp {
+                let endedCenter = recognizer.view!.center.x
+                if abs(endedCenter - screenCenterX) > panGestureSensitivity {
+                    menuHandler(index: -1)
+                } else {
+                    showOrHideMenu(show: false)
+                }
+            } else {
+                // FIXME: When menu showed disable left gesture
+                let endedCenter = recognizer.view!.center.x
+                if abs(endedCenter - screenCenterX) > panGestureSensitivity {
+                    menuHandler(index: -1)
+                } else {
+                    showOrHideMenu(show: true)
+                }
+            }
+        default:
+            break
+        }
     }
     
     func setupHomeView() {
