@@ -37,6 +37,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		DBA20DFA25C12F8200103361 /* Explain.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Explain.gif; sourceTree = "<group>"; };
+		DBA20DFB25C1305500103361 /* Demo.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Demo.gif; sourceTree = "<group>"; };
 		DBBBA84625BD5E3A0091E386 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		DBF4D91C25BD5B8C0089738C /* SidebarMenu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SidebarMenu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBF4D91F25BD5B8C0089738C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -84,6 +86,8 @@
 		DBF4D91325BD5B8C0089738C = {
 			isa = PBXGroup;
 			children = (
+				DBA20DFA25C12F8200103361 /* Explain.gif */,
+				DBA20DFB25C1305500103361 /* Demo.gif */,
 				DBBBA84625BD5E3A0091E386 /* README.md */,
 				DBF4D91E25BD5B8C0089738C /* SidebarMenu */,
 				DBF4D93525BD5B8F0089738C /* SidebarMenuTests */,
