@@ -12,7 +12,7 @@ class ContainerViewController: UIViewController {
     var menuView: MenuViewController!
     var centerView: UINavigationController!
     var homeView: HomeViewController!
-    var ifMenuShowUp: Bool = false
+    var menuShowUp: Bool = false
     
     let menuWidth: CGFloat = 200
     let panGestureSensitivity: CGFloat = 40
@@ -31,31 +31,37 @@ class ContainerViewController: UIViewController {
     @objc func panGestureAction(_ recognizer: UIPanGestureRecognizer) {
         
         let screenCenterX = recognizer.view!.frame.width / 2
+        let screenCenterXMenuShowUp = recognizer.view!.frame.width / 2 + menuWidth
         
         switch(recognizer.state) {
         case .began:
             setupMenuView()
         case .changed:
             let moveDistance = recognizer.translation(in: centerView.view).x
-            let newPosition = (recognizer.view?.center.x)! + moveDistance
-            if !ifMenuShowUp {
+            if !menuShowUp {
+                
+                let newPosition = (recognizer.view?.center.x)! + moveDistance
                 if moveDistance > 0 {
-                    if newPosition >= screenCenterX {
+                    if newPosition >= screenCenterX
+                    && recognizer.view!.center.x <= screenCenterXMenuShowUp {
                         recognizer.view?.center.x = newPosition
                         menuView.view.frame.origin.x = menuView.view.frame.origin.x + moveDistance
                         recognizer.setTranslation(.zero, in: centerView.view)
                     }
                 }
             } else {
+                let newPosition = (recognizer.view?.center.x)! + moveDistance
                 if moveDistance < 0 {
-                    recognizer.view?.center.x = newPosition
-                    menuView.view.frame.origin.x = menuView.view.frame.origin.x + moveDistance
-                    recognizer.setTranslation(.zero, in: centerView.view)
+                    if newPosition <= screenCenterXMenuShowUp
+                    && recognizer.view!.center.x >= screenCenterX {
+                        recognizer.view?.center.x = newPosition
+                        menuView.view.frame.origin.x = menuView.view.frame.origin.x + moveDistance
+                        recognizer.setTranslation(.zero, in: centerView.view)
+                    }
                 }
             }
         case .ended:
-            print(recognizer.translation(in: menuView.view).x)
-            if !ifMenuShowUp {
+            if !menuShowUp {
                 let endedCenter = recognizer.view!.center.x
                 if abs(endedCenter - screenCenterX) > panGestureSensitivity {
                     menuHandler(index: -1)
@@ -63,9 +69,8 @@ class ContainerViewController: UIViewController {
                     showOrHideMenu(show: false)
                 }
             } else {
-                // FIXME: When menu showed disable left gesture
                 let endedCenter = recognizer.view!.center.x
-                if abs(endedCenter - screenCenterX) > panGestureSensitivity {
+                if abs(endedCenter - screenCenterXMenuShowUp) > panGestureSensitivity {
                     menuHandler(index: -1)
                 } else {
                     showOrHideMenu(show: true)
@@ -113,7 +118,7 @@ class ContainerViewController: UIViewController {
     }
     
     override var prefersStatusBarHidden: Bool {
-        return ifMenuShowUp
+        return menuShowUp
     }
     
     override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
@@ -166,12 +171,12 @@ class FirstVC: UIViewController {
 
 extension ContainerViewController: MenuDelegate {
     func menuHandler(index: Int) {
-        if !ifMenuShowUp {
+        if !menuShowUp {
             setupMenuView()
         }
         
-        ifMenuShowUp = !ifMenuShowUp
-        showOrHideMenu(show: ifMenuShowUp)
+        menuShowUp = !menuShowUp
+        showOrHideMenu(show: menuShowUp)
         
         if index > -1 {
             homeViewSwitchToPage(at: index)
