@@ -1,8 +1,14 @@
-# Sidebar Menu
+# Sidebar Menu Demo
 
-## Key Point
+An Android style sidebar menu demo, using swift 5.
 
-Use `ContainerView` as basic view, `HomeView` for content display and `MenuView` as sidebar menu. when click controller toolbar left button, container view will move left `x - menuWidth` pt.
+![Demo](https://github.com/rijieli/SidebarMenu/raw/main/Demo.gif)
+
+## Explain
+
+Use `Container View` as basic view, `Home View` for content display and `Menu View` as sidebar menu. when swipe left, container view will move left `x - menuWidth` pt.
+
+![Explain](https://github.com/rijieli/SidebarMenu/raw/main/Explain.gif)
 
 ## References
 
