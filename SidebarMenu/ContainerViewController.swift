@@ -92,19 +92,6 @@ class ContainerViewController: UIViewController {
         }
     }
     
-    func homeViewSwitchToPage(at index: Int) {
-        switch index {
-        case 1:
-            setupMenuView()
-        case 2:
-            homeView.navigationController?.pushViewController(FirstVC(), animated: true)
-        case 3:
-            print("Not implement: \(#filePath) - \(#line)")
-        default:
-            setupMenuView()
-        }
-    }
-    
     func setupMenuView() {
         if menuView == nil {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -165,10 +152,6 @@ class ContainerViewController: UIViewController {
 
 }
 
-class FirstVC: UIViewController {
-    
-}
-
 extension ContainerViewController: MenuDelegate {
     func menuHandler(index: Int) {
         if !menuShowUp {
@@ -184,5 +167,15 @@ extension ContainerViewController: MenuDelegate {
     }
 }
 
-
+extension ContainerViewController {
+    func homeViewSwitchToPage(at index: Int) {
+        if index < 0 {
+            setupMenuView()
+        } else {
+            let currentTitle = MenuViewController.menus[index-1]
+            homeView.label.text = currentTitle + " Page"
+            homeView.navigationItem.title = currentTitle
+        }
+    }
+}
 

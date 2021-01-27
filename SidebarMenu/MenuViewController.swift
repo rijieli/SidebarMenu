@@ -18,7 +18,7 @@ class MenuViewController: UITableViewController {
     // FIXME: - Menu header view
     //  var menuHeaderView: UIImageView!
     
-    var menus: [String] = ["Today", "Due", "Finished"]
+    static var menus: [String] = ["Today", "Due", "Finished"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,19 +30,19 @@ class MenuViewController: UITableViewController {
 
 extension MenuViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return menus.count
+        return Self.menus.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "sideMenuItem")!
         
-        cell.textLabel?.text = menus[indexPath.row]
+        cell.textLabel?.text = Self.menus[indexPath.row]
         
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        delegate?.menuHandler(index: indexPath.row + 1)
+        delegate?.menuHandler(index: indexPath.row+1)
     }
 }

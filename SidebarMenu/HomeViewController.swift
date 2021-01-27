@@ -10,6 +10,7 @@ import UIKit
 class HomeViewController: UIViewController {
     
     var delegate: MenuDelegate?
+    var label = UILabel()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,18 +19,21 @@ class HomeViewController: UIViewController {
     }
     
     func setNavigation() {
-        self.navigationItem.title = "HOME"
+        self.navigationItem.title = MenuViewController.menus[0]
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "slider.horizontal.3"), style: .plain, target: self, action: #selector(handleMenu))
+        self.navigationItem.leftBarButtonItem?.tintColor = .gray
     }
     
     func setupSelf() {
         self.view.backgroundColor = .white
-        let label = UILabel()
-        label.text = "HomeViewController"
+        label.text = MenuViewController.menus[0] + " Page"
+        label.font = .systemFont(ofSize: 18)
         self.view.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
         
-        label.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
+        let safeArea = self.view.safeAreaLayoutGuide
+        
+        label.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 30).isActive = true
         label.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
     }
 
